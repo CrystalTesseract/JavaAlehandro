@@ -2,7 +2,7 @@ package Task2;
 
 import java.util.*;
 public class Calc {
-    public static void main() {
+    public static void start() {
         Scanner scan = new Scanner(System.in);
         System.out.print("Введите первое число >>> ");
         Double element1 = (double) scan.nextInt();

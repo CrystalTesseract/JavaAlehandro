@@ -10,8 +10,8 @@ public class Main {
         try {
             int q = sc.nextInt();
             switch (q) {
-                case 1 -> Calc.main();
-                case 2 -> PersonBase.main();
+                case 1 -> Calc.start();
+                case 2 -> PersonBase.start();
             }
         } catch (InputMismatchException e) {
             System.out.println("Введено неверное значение");

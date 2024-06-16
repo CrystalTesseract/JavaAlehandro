@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class PersonBase {
-    public static void main() {
+    public static void start() {
         Scanner scanner = new Scanner(System.in);
         ArrayList<Person> persons = new ArrayList<>();
         Person pers;
@@ -15,7 +15,7 @@ public class PersonBase {
             scanner.nextLine();
             switch (d){
                 case 1 -> {
-                    System.out.println("Введите имя персоны, а затем возраст:");
+                    System.out.println("Отправье имя персоны, а затем отправьте возраст:");
                     persons.add(new Person(scanner.nextLine(), scanner.nextInt()));
                 }
 
@@ -28,5 +28,18 @@ public class PersonBase {
 
 
 
+    }
+}
+class Person {
+    private String name;
+    private int age;
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    @Override
+    public String toString() {
+        return name + ':' + age;
     }
 }
