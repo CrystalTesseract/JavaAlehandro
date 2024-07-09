@@ -2,6 +2,7 @@ package SergoProj;
 
 import java.util.ArrayList;
 import java.util.Scanner;
+import com.github.javafaker.Faker;
 
 public class PersonBase extends Thread {
     static ArrayList<Person> persons = new ArrayList<>();
@@ -17,9 +18,10 @@ public class PersonBase extends Thread {
     @Override
     public void run() {
         Scanner scanner = new Scanner(System.in);
+        Faker fakeNamer = new Faker();
 
         while (!isInterrupted()) {
-            System.out.print("Выберите операцию: 0 - вернуться к выбору программ, 1 - добавить личность, 2 - просмотреть личности, 3 - добавить n пустых личностей >>> ");
+            System.out.print("Выберите операцию: 0 - вернуться к выбору программ, 1 - добавить личность, 2 - просмотреть личности, 3 - добавить n случайных личностей >>> ");
             int d = scanner.nextInt();
             scanner.nextLine();
             switch (d) {
@@ -37,8 +39,8 @@ public class PersonBase extends Thread {
                     int n = scanner.nextInt();
                     scanner.nextLine();
                     for (int i = 0; i < n; i++) {
-                        String nameP = "null person #" + i;
-                        persons.add(new Person(nameP, 0));
+                        String fakeName = fakeNamer.name().firstName();
+                        persons.add(new Person(fakeName, 0));
                     }
                 }
             }
@@ -46,17 +48,3 @@ public class PersonBase extends Thread {
     }
 }
 
-class Person {
-    private final String name;
-    private final int age;
-
-    public Person(String name, int age) {
-        this.name = name;
-        this.age = age;
-    }
-
-    @Override
-    public String toString() {
-        return name + ':' + age;
-    }
-}
