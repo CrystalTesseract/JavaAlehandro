@@ -2,32 +2,30 @@ package SergoProj;
 
 import lombok.SneakyThrows;
 
+import java.io.Console;
 import java.sql.*;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
-
-    public static String url = "jdbc:postgresql://localhost:5432/postgres";
-    public static String user = "user";
-    public static String password = "password";
+    static DataBaseService db = new DataBaseService();
+    static ConsoleUtils cons = new ConsoleUtils();
+    static MailUtils mail = new MailUtils();
 
     @SneakyThrows
     public static void main(String[] args) {
         Boolean IsNotEnded = true;
 
-            Connection con = DriverManager.getConnection(url, user, password);
-            Statement stmt = con.createStatement();
+        db.connect();
+        db.execute("create table if not exists person (ID int, name varchar(255), age int, Email varchar(255))");
+        mail.setProperties();
 
-            stmt.execute("create table if not exists person (ID int, name varchar(255), age int)");
-
-        Scanner sc = new Scanner(System.in);
         PersonBase personBase = new PersonBase();
 
         while (IsNotEnded) {
-            System.out.print("Выберите программу: 1 - калькулятор, 2 - База данных персон, 3 - закончить работу >>> ");
+            cons.print("Выберите программу: 1 - калькулятор, 2 - База данных персон, 3 - закончить работу >>> ");
             try {
-                int q = sc.nextInt();
+                int q = cons.getInt();
                 switch (q) {
                     case 1 -> {
                         Calc calc = new Calc();
@@ -45,13 +43,13 @@ public class Main {
                     case 3 -> {IsNotEnded=false;}
                 }
             } catch (InputMismatchException e) {
-                System.out.println("Введено неверное значение");
-                sc.next();
+                cons.println("Введено неверное значение");
+                cons.next();
             } catch (InterruptedException e) {
-                System.out.println("Возвращение к выбору программ");
+                cons.println("Возвращение к выбору программ");
             }
         }
-        stmt.execute("drop table person");
+        db.execute("drop table person");
 
 
     }
