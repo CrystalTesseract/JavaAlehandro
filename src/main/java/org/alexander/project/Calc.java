@@ -1,4 +1,4 @@
-package SergoProj;
+package org.alexander.project;
 
 import java.util.Scanner;
 

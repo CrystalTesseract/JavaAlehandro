@@ -1,4 +1,4 @@
-package SergoProj;
+package org.alexander.project.entity;
 
 import lombok.Data;
 

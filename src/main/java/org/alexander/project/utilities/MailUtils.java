@@ -1,50 +1,16 @@
-package SergoProj;
+package org.alexander.project.utilities;
 
-import com.github.javafaker.Faker;
 import jakarta.mail.*;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import lombok.SneakyThrows;
 
 import java.util.Properties;
-import java.util.Scanner;
 
-import static SergoProj.Main.cons;
-
-public class Utilities {
-}
-
-class ConsoleUtils{
-    Scanner scanner = new Scanner(System.in);
-    public int getInt(){
-        return scanner.nextInt();
-    }
-    public String getLine(){
-        return scanner.nextLine();
-    }
-    public void next() {
-        scanner.next();
-    };
-    public void nextLine(){
-        scanner.nextLine();
-    }
-    public void print(String m){
-        System.out.print(m);
-    }
-    public void println(String m){
-        System.out.println(m);
-    }
-}
-
-class PersonGeneratorUtils{
-    Faker faker = new Faker();
-    public String generateName(){return faker.name().firstName();}
-    public String generateEmail(){return faker.internet().emailAddress();}
-}
-
-class MailUtils {
+public class MailUtils {
     Session session;
     Message message;
+
     public void setProperties() {
         Properties prop = new Properties();
         prop.put("mail.smtp.auth", true);
@@ -59,19 +25,21 @@ class MailUtils {
             }
         });
     }
+
     @SneakyThrows
-    public void createMessage(String msg){
+    public void createMessage(String msg) {
         message = new MimeMessage(session);
         message.setSubject("Приветственное письмо"); // Тема письма
         message.setText(msg); // Текст письма
 
     }
+
     @SneakyThrows
-    public void sendMessage(String to){
+    public void sendMessage(String to) {
         message.setFrom(new InternetAddress("CompanyBuildAnotherCompany@gayil.cock"));
         message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
         Transport.send(message);
-        cons.println("Отправлено!");
+        System.out.println("Отправлено!");
     }
 
 }

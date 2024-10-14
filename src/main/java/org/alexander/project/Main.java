@@ -1,24 +1,22 @@
-package SergoProj;
+package org.alexander.project;
 
 import lombok.SneakyThrows;
+import org.alexander.project.utilities.ConsoleUtils;
+import org.alexander.project.utilities.DataBaseUtils;
 
-import java.io.Console;
-import java.sql.*;
 import java.util.InputMismatchException;
-import java.util.Scanner;
 
 public class Main {
-    static DataBaseService db = new DataBaseService();
-    static ConsoleUtils cons = new ConsoleUtils();
-    static MailUtils mail = new MailUtils();
+
 
     @SneakyThrows
     public static void main(String[] args) {
-        Boolean IsNotEnded = true;
-
-        db.connect();
-        db.execute("create table if not exists person (ID int, name varchar(255), age int, Email varchar(255))");
-        mail.setProperties();
+        ConsoleUtils cons = new ConsoleUtils();
+        boolean IsNotEnded = true;
+        DataBaseUtils db = new DataBaseUtils();
+        db.setConnection();
+        db.dropPersonTable();
+        db.createPersonTable();
 
         PersonBase personBase = new PersonBase();
 
@@ -40,7 +38,9 @@ public class Main {
                         }
                         personBase.join();
                     }
-                    case 3 -> {IsNotEnded=false;}
+                    case 3 -> {
+                        IsNotEnded = false;
+                    }
                 }
             } catch (InputMismatchException e) {
                 cons.println("Введено неверное значение");
@@ -49,7 +49,7 @@ public class Main {
                 cons.println("Возвращение к выбору программ");
             }
         }
-        db.execute("drop table person");
+        db.dropPersonTable();
 
 
     }
