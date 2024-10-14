@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class PersonBase extends Thread {
+public class PersonBase implements Runnable {
     static ArrayList<Person> persons = new ArrayList<>();
 
     public static void setArr(ArrayList<Person> arr) {
@@ -42,7 +42,7 @@ public class PersonBase extends Thread {
         mail.createMessage("Наша компания по производству компаний приветствует вас! Мы предлагаем вам открыть компанию через нашу компанию для продвижения компаний.");
 
 
-        while (!isInterrupted()) {
+        while (!Thread.currentThread().isInterrupted()) {
             cons.print("Выберите операцию: 0 - вернуться к выбору программ, 1 - просмотреть личности, 2 - просмотреть личности из таблицы, 3 - добавить личность, 4 - добавить n случайных личностей, 5 - добавить личность с почтой, 6 - разослать всем личностям приветственное письмо, 7 - отправить конкретной личности приветственное письмо >>> ");
             int d = cons.getInt();
             cons.nextLine();

@@ -19,6 +19,7 @@ public class Main {
         db.createPersonTable();
 
         PersonBase personBase = new PersonBase();
+        Thread pbThread = new Thread(personBase);
 
         while (IsNotEnded) {
             cons.print("Выберите программу: 1 - калькулятор, 2 - База данных персон, 3 - закончить работу >>> ");
@@ -32,11 +33,11 @@ public class Main {
                         calcThread.join();
                     }
                     case 2 -> {
-                        if (!personBase.isAlive()) {
-                            personBase = new PersonBase();
-                            personBase.start();
+                        if (!pbThread.isAlive()) {
+                            pbThread = new Thread(personBase);
+                            pbThread.start();
                         }
-                        personBase.join();
+                        pbThread.join();
                     }
                     case 3 -> {
                         IsNotEnded = false;
