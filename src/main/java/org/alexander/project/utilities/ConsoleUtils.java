@@ -3,7 +3,7 @@ package org.alexander.project.utilities;
 import java.util.Scanner;
 
 public class ConsoleUtils {
-    Scanner scanner = new Scanner(System.in);
+    private final Scanner scanner = new Scanner(System.in);
 
     public int getInt() {
         return scanner.nextInt();

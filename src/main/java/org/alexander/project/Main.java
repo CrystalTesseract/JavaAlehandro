@@ -1,6 +1,8 @@
 package org.alexander.project;
 
 import lombok.SneakyThrows;
+import org.alexander.project.service.CalculatorService;
+import org.alexander.project.service.PersonService;
 import org.alexander.project.utilities.ConsoleUtils;
 import org.alexander.project.utilities.DataBaseUtils;
 
@@ -18,7 +20,7 @@ public class Main {
         db.dropPersonTable();
         db.createPersonTable();
 
-        PersonBase personBase = new PersonBase();
+        PersonService personBase = new PersonService();
         Thread pbThread = new Thread(personBase);
 
         while (IsNotEnded) {
@@ -27,7 +29,7 @@ public class Main {
                 int q = cons.getInt();
                 switch (q) {
                     case 1 -> {
-                        Calc calc = new Calc();
+                        CalculatorService calc = new CalculatorService();
                         Thread calcThread = new Thread(calc);
                         calcThread.start();
                         calcThread.join();

@@ -1,8 +1,8 @@
-package org.alexander.project;
+package org.alexander.project.service;
 
 import java.util.Scanner;
 
-public class Calc implements Runnable {
+public class CalculatorService implements Runnable {
     @Override
     public void run() {
         Scanner scan = new Scanner(System.in);

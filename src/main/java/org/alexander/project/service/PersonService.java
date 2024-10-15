@@ -1,4 +1,4 @@
-package org.alexander.project;
+package org.alexander.project.service;
 
 import lombok.SneakyThrows;
 import org.alexander.project.entity.Person;
@@ -13,16 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class PersonBase implements Runnable {
-    static ArrayList<Person> persons = new ArrayList<>();
-
-    public static void setArr(ArrayList<Person> arr) {
-        persons = arr;
-    }
-
-    public static ArrayList<Person> getArr() {
-        return persons;
-    }
+public class PersonService implements Runnable {
 
     @SneakyThrows
     @Override
@@ -33,11 +24,11 @@ public class PersonBase implements Runnable {
         MailUtils mail = new MailUtils();
         mail.setProperties();
 
-        String pn = null;
-        int pa = 0;
-        String fpn = null;
-        int fpa = 0;
-        int idCounter = 0;
+        String personName = null;
+        int personAge = 0;
+        String fakePersonName = null;
+        int fakePersonAge = 0;
+        int id = 0;
         String fakeEmail = null;
         mail.createMessage("Наша компания по производству компаний приветствует вас! Мы предлагаем вам открыть компанию через нашу компанию для продвижения компаний.");
 
@@ -50,7 +41,7 @@ public class PersonBase implements Runnable {
                 case 0 -> {
                     return;
                 }
-                case 1 -> System.out.println(persons);
+                case 1 -> System.out.println("Эта опция более неактуальна");
                 case 2 -> {
                     ResultSet rs = db.getPersonTable();
                     while (rs.next()) {
@@ -60,43 +51,40 @@ public class PersonBase implements Runnable {
                 case 3 -> {
                     cons.println("Отправьте имя персоны, а затем отправьте возраст:");
 
-                    pn = cons.getLine();
-                    pa = cons.getInt();
-                    persons.add(new Person(pn, pa));
+                    personName = cons.getLine();
+                    personAge = cons.getInt();
                     cons.nextLine();
 
                     fakeEmail = fakeNamer.generateEmail();
 
-                    db.insertPerson(idCounter, pn, pa, fakeEmail);
-                    idCounter++;
+                    db.insertPerson(id, personName, personAge, fakeEmail);
+                    id++;
                 }
                 case 4 -> {
                     cons.print("Отправьте целое число n >>> ");
                     int n = cons.getInt();
                     cons.nextLine();
                     for (int i = 0; i < n; i++) {
-                        fpn = fakeNamer.generateName();
-                        fpa = (int) Math.round(Math.random() * 120);
+                        fakePersonName = fakeNamer.generateName();
+                        fakePersonAge = (int) Math.round(Math.random() * 120);
                         fakeEmail = fakeNamer.generateEmail();
 
-                        persons.add(new Person(fpn, fpa));
 
-                        db.insertPerson(idCounter, fpn, fpa, fakeEmail);
-                        idCounter++;
+                        db.insertPerson(id, fakePersonName, fakePersonAge, fakeEmail);
+                        id++;
                     }
                 }
                 case 5 -> {
                     cons.print("Отправьте почту получателя >>>");
                     String realEmail = cons.getLine();
                     cons.println("Отправьте имя персоны, а затем отправьте возраст:");
-                    pn = cons.getLine();
-                    pa = cons.getInt();
+                    personName = cons.getLine();
+                    personAge = cons.getInt();
 
-                    persons.add(new Person(pn, pa));
                     cons.nextLine();
 
-                    db.insertPerson(idCounter, pn, pa, realEmail);
-                    idCounter++;
+                    db.insertPerson(id, personName, personAge, realEmail);
+                    id++;
                 }
                 case 6 -> {
                     ResultSet rs = db.executeQuery("select * from person");

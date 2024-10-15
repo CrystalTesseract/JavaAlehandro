@@ -8,16 +8,14 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 
 public class DataBaseUtils {
-    public static String url = "jdbc:postgresql://localhost:5432/postgres";
-    public static String user = "user";
-    public static String password = "password";
-    static Statement stmtContainer = null;
-    static Statement stmt = null;
-    Connection con = null;
+    private static final String url = "jdbc:postgresql://localhost:5432/postgres";
+    private static final String user = "user";
+    private static final String password = "password";
+    private static Statement stmt = null;
 
     @SneakyThrows
     public void setConnection() {
-        con = DriverManager.getConnection(url, user, password);
+        Connection con = DriverManager.getConnection(url, user, password);
         stmt = con.createStatement();
     }
 

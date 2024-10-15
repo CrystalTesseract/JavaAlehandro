@@ -8,8 +8,8 @@ import lombok.SneakyThrows;
 import java.util.Properties;
 
 public class MailUtils {
-    Session session;
-    Message message;
+    private Session session;
+    private Message message;
 
     public void setProperties() {
         Properties prop = new Properties();
