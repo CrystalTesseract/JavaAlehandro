@@ -13,11 +13,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class PersonService implements Runnable {
-
+public class PersonService{
+    private int id = 0;
     @SneakyThrows
-    @Override
-    public void run() {
+    public void perform() {
         PersonGeneratorUtils fakeNamer = new PersonGeneratorUtils();
         DataBaseUtils db = new DataBaseUtils();
         ConsoleUtils cons = new ConsoleUtils();
@@ -28,7 +27,6 @@ public class PersonService implements Runnable {
         int personAge = 0;
         String fakePersonName = null;
         int fakePersonAge = 0;
-        int id = 0;
         String fakeEmail = null;
         mail.createMessage("Наша компания по производству компаний приветствует вас! Мы предлагаем вам открыть компанию через нашу компанию для продвижения компаний.");
 

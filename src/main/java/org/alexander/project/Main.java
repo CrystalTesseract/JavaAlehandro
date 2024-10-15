@@ -7,6 +7,9 @@ import org.alexander.project.utilities.ConsoleUtils;
 import org.alexander.project.utilities.DataBaseUtils;
 
 import java.util.InputMismatchException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class Main {
 
@@ -20,8 +23,11 @@ public class Main {
         db.dropPersonTable();
         db.createPersonTable();
 
-        PersonService personBase = new PersonService();
-        Thread pbThread = new Thread(personBase);
+        ExecutorService executor = Executors.newFixedThreadPool(1);
+        PersonService personService = new PersonService();
+        CalculatorService calculatorService = new CalculatorService();
+        Future<?> futurePersonService = null;
+        Future<?> futureCalculator = null;
 
         while (IsNotEnded) {
             cons.print("Выберите программу: 1 - калькулятор, 2 - База данных персон, 3 - закончить работу >>> ");
@@ -29,17 +35,14 @@ public class Main {
                 int q = cons.getInt();
                 switch (q) {
                     case 1 -> {
-                        CalculatorService calc = new CalculatorService();
-                        Thread calcThread = new Thread(calc);
-                        calcThread.start();
-                        calcThread.join();
+                        futureCalculator = executor.submit(() -> calculatorService.perform());
+                        futureCalculator.get();
                     }
                     case 2 -> {
-                        if (!pbThread.isAlive()) {
-                            pbThread = new Thread(personBase);
-                            pbThread.start();
+                        if (futurePersonService==null || futurePersonService.isDone() ) {
+                            futurePersonService = executor.submit(() -> personService.perform());
                         }
-                        pbThread.join();
+                        futurePersonService.get();
                     }
                     case 3 -> {
                         IsNotEnded = false;
@@ -53,7 +56,6 @@ public class Main {
             }
         }
         db.dropPersonTable();
-
-
+        executor.shutdown();
     }
 }

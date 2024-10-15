@@ -2,9 +2,8 @@ package org.alexander.project.service;
 
 import java.util.Scanner;
 
-public class CalculatorService implements Runnable {
-    @Override
-    public void run() {
+public class CalculatorService {
+    public void perform() {
         Scanner scan = new Scanner(System.in);
         System.out.print("Введите первое число >>> ");
         Double element1 = scan.nextDouble();
