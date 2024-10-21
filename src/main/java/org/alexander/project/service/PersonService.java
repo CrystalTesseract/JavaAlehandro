@@ -1,26 +1,23 @@
 package org.alexander.project.service;
 
 import lombok.SneakyThrows;
-import org.alexander.project.entity.Person;
-import org.alexander.project.utilities.ConsoleUtils;
-import org.alexander.project.utilities.DataBaseUtils;
-import org.alexander.project.utilities.MailUtils;
-import org.alexander.project.utilities.PersonGeneratorUtils;
+import org.alexander.project.utilities.*;
 
 import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.alexander.project.Storage.nextId;
 
-public class PersonService{
-    private int id = 0;
+
+public class PersonService {
+    PersonGeneratorUtils fakeNamer = new PersonGeneratorUtils();
+    DataBaseUtils db = new DataBaseUtils();
+    ConsoleUtils cons = new ConsoleUtils();
+    MailUtils mail = new MailUtils();
+
     @SneakyThrows
     public void perform() {
-        PersonGeneratorUtils fakeNamer = new PersonGeneratorUtils();
-        DataBaseUtils db = new DataBaseUtils();
-        ConsoleUtils cons = new ConsoleUtils();
-        MailUtils mail = new MailUtils();
         mail.setProperties();
 
         String personName = null;
@@ -32,18 +29,28 @@ public class PersonService{
 
 
         while (!Thread.currentThread().isInterrupted()) {
-            cons.print("Выберите операцию: 0 - вернуться к выбору программ, 1 - просмотреть личности, 2 - просмотреть личности из таблицы, 3 - добавить личность, 4 - добавить n случайных личностей, 5 - добавить личность с почтой, 6 - разослать всем личностям приветственное письмо, 7 - отправить конкретной личности приветственное письмо >>> ");
+            cons.print("Выберите операцию: 0 - вернуться к выбору программ, 1 - Получить данные по ИНН личности, 2 - просмотреть личности из таблицы, 3 - добавить личность, 4 - добавить n случайных личностей, 5 - добавить личность с почтой, 6 - разослать всем личностям приветственное письмо, 7 - отправить конкретной личности приветственное письмо >>> ");
             int d = cons.getInt();
             cons.nextLine();
             switch (d) {
                 case 0 -> {
                     return;
                 }
-                case 1 -> System.out.println("Эта опция более неактуальна");
+                case 1 -> {
+                    ResultSet rs = db.getPersonTable();
+                    while (rs.next()) {
+                        cons.println("ID:" + rs.getInt("id") + " | Name:" + rs.getString("name") + " | Age:" + rs.getInt("age") + " | Email:" + rs.getString("email") + " | INN:" + rs.getString("inn"));
+                    }
+                    System.out.print("Введите ID личности>>>");
+                    int id = cons.getInt();
+                    String organizationData = FnsUtils.findOrganizationData(db.getInn(id));
+                    db.insertOrganizationData(id, organizationData);
+                    System.out.println(organizationData);
+                }
                 case 2 -> {
                     ResultSet rs = db.getPersonTable();
                     while (rs.next()) {
-                        cons.println("ID:" + rs.getInt("id") + " | Name:" + rs.getString("name") + " | Age:" + rs.getInt("age") + " | Email:" + rs.getString("email"));
+                        cons.println("ID:" + rs.getInt("id") + " | Name:" + rs.getString("name") + " | Age:" + rs.getInt("age") + " | Email:" + rs.getString("email") + " | INN:" + rs.getString("inn"));
                     }
                 }
                 case 3 -> {
@@ -55,8 +62,7 @@ public class PersonService{
 
                     fakeEmail = fakeNamer.generateEmail();
 
-                    db.insertPerson(id, personName, personAge, fakeEmail);
-                    id++;
+                    db.insertPerson(nextId(), personName, personAge, fakeEmail, fakeNamer.generateInn());
                 }
                 case 4 -> {
                     cons.print("Отправьте целое число n >>> ");
@@ -68,8 +74,7 @@ public class PersonService{
                         fakeEmail = fakeNamer.generateEmail();
 
 
-                        db.insertPerson(id, fakePersonName, fakePersonAge, fakeEmail);
-                        id++;
+                        db.insertPerson(nextId(), fakePersonName, fakePersonAge, fakeEmail, fakeNamer.generateInn());
                     }
                 }
                 case 5 -> {
@@ -81,8 +86,7 @@ public class PersonService{
 
                     cons.nextLine();
 
-                    db.insertPerson(id, personName, personAge, realEmail);
-                    id++;
+                    db.insertPerson(nextId(), personName, personAge, realEmail, fakeNamer.generateInn());
                 }
                 case 6 -> {
                     ResultSet rs = db.executeQuery("select * from person");
@@ -94,13 +98,16 @@ public class PersonService{
                     ResultSet rs = db.getPersonTable();
                     Map<Integer, String> emails = new HashMap<>();
                     while (rs.next()) {
-                        cons.println("ID:" + rs.getInt("id") + " | Name:" + rs.getString("name") + " | Age:" + rs.getInt("age") + " | Email:" + rs.getString("email"));
+                        cons.println("ID:" + rs.getInt("id") + " | Name:" + rs.getString("name") + " | Age:" + rs.getInt("age") + " | Email:" + rs.getString("email") + " | INN:" + rs.getString("inn"));
                         emails.put(rs.getInt("id"), rs.getString("email"));
                     }
                     cons.print("Отправьте ID получателя >>>");
                     int claimerId = cons.getInt();
                     cons.nextLine();
                     mail.sendMessage(emails.get(claimerId));
+                }
+                case 777 -> {
+                    db.insertPerson(nextId(), "Сергей", 52, "SeregaVaga@dota.tv", "507407629014");
                 }
             }
         }
