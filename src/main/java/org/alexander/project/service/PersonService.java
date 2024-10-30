@@ -1,13 +1,14 @@
 package org.alexander.project.service;
 
 import lombok.SneakyThrows;
+import org.alexander.project.api.FnsApi;
 import org.alexander.project.utilities.*;
 
 import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.alexander.project.Storage.nextId;
+import static org.alexander.project.storage.Storage.nextId;
 
 
 public class PersonService {
@@ -43,7 +44,7 @@ public class PersonService {
                     }
                     System.out.print("Введите ID личности>>>");
                     int id = cons.getInt();
-                    String organizationData = FnsUtils.findOrganizationData(db.getInn(id));
+                    String organizationData = FnsApi.findOrganizationData(db.getInn(id));
                     db.insertOrganizationData(id, organizationData);
                     System.out.println(organizationData);
                 }

@@ -1,6 +1,4 @@
-package org.alexander.project;
-
-import lombok.Data;
+package org.alexander.project.storage;
 
 
 public class Storage {

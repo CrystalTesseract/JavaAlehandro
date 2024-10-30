@@ -1,13 +1,15 @@
-package org.alexander.project.utilities;
+package org.alexander.project.api;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
+import org.alexander.project.utilities.JsonResponceUtils;
 
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
-public class FnsUtils {
+public class FnsApi {
     private static final HttpClient client = HttpClient.newHttpClient();
 
     @SneakyThrows
@@ -17,6 +19,11 @@ public class FnsUtils {
                 .GET()
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        return response.body();
+        ObjectMapper mapper = new ObjectMapper();
+        JsonResponceUtils JsonResponce = mapper.readValue(response.body(), JsonResponceUtils.class);
+        if (JsonResponce.toString() == null) {   //Чёт не работает правда. Пробовал и с (* == "")
+            return "Данных нет.";
+        }
+        return JsonResponce.toString();
     }
 }
