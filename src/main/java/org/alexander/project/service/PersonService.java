@@ -19,6 +19,7 @@ public class PersonService {
     DataBaseUtils db = new DataBaseUtils();
     ConsoleUtils cons = new ConsoleUtils();
     MailUtils mail = new MailUtils();
+    FnsApi fnsApi = new FnsApi();
 
     @SneakyThrows
     public void perform() {
@@ -48,7 +49,7 @@ public class PersonService {
                     }
                     System.out.print("Введите ID личности>>>");
                     int id = cons.getInt();
-                    String organizationData = FnsApi.findOrganizationData(db.getInn(id)).toString();
+                    String organizationData = fnsApi.findOrganizationData(db.getInn(id)).toString();
                     db.insertOrganizationData(id, organizationData);
                     System.out.println(organizationData);
                 }
