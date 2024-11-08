@@ -2,7 +2,10 @@ package org.alexander.project.service;
 
 import lombok.SneakyThrows;
 import org.alexander.project.api.FnsApi;
-import org.alexander.project.utilities.*;
+import org.alexander.project.utilities.ConsoleUtils;
+import org.alexander.project.utilities.DataBaseUtils;
+import org.alexander.project.utilities.MailUtils;
+import org.alexander.project.utilities.PersonGeneratorUtils;
 
 import java.sql.ResultSet;
 import java.util.HashMap;
@@ -26,11 +29,12 @@ public class PersonService {
         String fakePersonName = null;
         int fakePersonAge = 0;
         String fakeEmail = null;
-        mail.createMessage("Наша компания по производству компаний приветствует вас! Мы предлагаем вам открыть компанию через нашу компанию для продвижения компаний.");
+        mail.createRealMessage("Тестовое письмо. Если вы случайно его получили - забейте.");
+        mail.createFakeMessage("Наша компания по производству компаний приветствует вас! Мы предлагаем вам открыть компанию через нашу компанию для продвижения компаний.");
 
 
         while (!Thread.currentThread().isInterrupted()) {
-            cons.print("Выберите операцию: 0 - вернуться к выбору программ, 1 - Получить данные по ИНН личности, 2 - просмотреть личности из таблицы, 3 - добавить личность, 4 - добавить n случайных личностей, 5 - добавить личность с почтой, 6 - разослать всем личностям приветственное письмо, 7 - отправить конкретной личности приветственное письмо >>> ");
+            cons.print("Выберите операцию: 0 - вернуться к выбору программ, 1 - Получить данные по ИНН личности, 2 - просмотреть личности из таблицы, 3 - добавить личность, 4 - добавить n случайных личностей, 5 - добавить личность с почтой, 6 - разослать всем личностям приветственное письмо, 7 - отправить конкретной личности приветственное письмо, 8 - отправить конкретной личности реальное письмо >>> ");
             int d = cons.getInt();
             cons.nextLine();
             switch (d) {
@@ -44,7 +48,7 @@ public class PersonService {
                     }
                     System.out.print("Введите ID личности>>>");
                     int id = cons.getInt();
-                    String organizationData = FnsApi.findOrganizationData(db.getInn(id));
+                    String organizationData = FnsApi.findOrganizationData(db.getInn(id)).toString();
                     db.insertOrganizationData(id, organizationData);
                     System.out.println(organizationData);
                 }
@@ -92,7 +96,7 @@ public class PersonService {
                 case 6 -> {
                     ResultSet rs = db.executeQuery("select * from person");
                     while (rs.next()) {
-                        mail.sendMessage(rs.getString("email"));
+                        mail.sendFakeMessage(rs.getString("email"));
                     }
                 }
                 case 7 -> {
@@ -105,7 +109,19 @@ public class PersonService {
                     cons.print("Отправьте ID получателя >>>");
                     int claimerId = cons.getInt();
                     cons.nextLine();
-                    mail.sendMessage(emails.get(claimerId));
+                    mail.sendFakeMessage(emails.get(claimerId));
+                }
+                case 8 -> {
+                    ResultSet rs = db.getPersonTable();
+                    Map<Integer, String> emails = new HashMap<>();
+                    while (rs.next()) {
+                        cons.println("ID:" + rs.getInt("id") + " | Name:" + rs.getString("name") + " | Age:" + rs.getInt("age") + " | Email:" + rs.getString("email") + " | INN:" + rs.getString("inn"));
+                        emails.put(rs.getInt("id"), rs.getString("email"));
+                    }
+                    cons.print("Отправьте ID получателя >>>");
+                    int claimerId = cons.getInt();
+                    cons.nextLine();
+                    mail.sendRealMessage(emails.get(claimerId));
                 }
                 case 777 -> {
                     db.insertPerson(nextId(), "Сергей", 52, "SeregaVaga@dota.tv", "507407629014");
