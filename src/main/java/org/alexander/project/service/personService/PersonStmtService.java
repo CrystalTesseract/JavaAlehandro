@@ -1,9 +1,9 @@
-package org.alexander.project.service;
+package org.alexander.project.service.personService;
 
 import lombok.SneakyThrows;
 import org.alexander.project.api.FnsApi;
 import org.alexander.project.utilities.ConsoleUtils;
-import org.alexander.project.utilities.DataBaseUtils;
+import org.alexander.project.utilities.DataBaseStmtUtils;
 import org.alexander.project.utilities.MailUtils;
 import org.alexander.project.utilities.PersonGeneratorUtils;
 
@@ -14,9 +14,9 @@ import java.util.Map;
 import static org.alexander.project.storage.Storage.nextId;
 
 
-public class PersonService {
+public class PersonStmtService {
     PersonGeneratorUtils fakeNamer = new PersonGeneratorUtils();
-    DataBaseUtils db = new DataBaseUtils();
+    DataBaseStmtUtils db = new DataBaseStmtUtils();
     ConsoleUtils cons = new ConsoleUtils();
     MailUtils mail = new MailUtils();
     FnsApi fnsApi = new FnsApi();
@@ -95,7 +95,7 @@ public class PersonService {
                     db.insertPerson(nextId(), personName, personAge, realEmail, fakeNamer.generateInn());
                 }
                 case 6 -> {
-                    ResultSet rs = db.executeQuery("select * from person");
+                    ResultSet rs = db.ZexecuteQuery("select * from person");
                     while (rs.next()) {
                         mail.sendFakeMessage(rs.getString("email"));
                     }

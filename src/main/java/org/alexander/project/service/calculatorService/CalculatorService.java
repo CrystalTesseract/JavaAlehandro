@@ -1,4 +1,4 @@
-package org.alexander.project.service;
+package org.alexander.project.service.calculatorService;
 
 import java.util.Scanner;
 
