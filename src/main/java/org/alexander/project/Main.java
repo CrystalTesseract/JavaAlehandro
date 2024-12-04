@@ -6,11 +6,14 @@ import org.alexander.project.service.personService.PersonOrmService;
 import org.alexander.project.service.personService.PersonStmtService;
 import org.alexander.project.utilities.ConsoleUtils;
 import org.alexander.project.utilities.DataBaseStmtUtils;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+@SpringBootApplication
 public class Main {
     static ExecutorService executor = Executors.newFixedThreadPool(1);
     static PersonStmtService personStmtService = new PersonStmtService();
@@ -22,6 +25,8 @@ public class Main {
 
     @SneakyThrows
     public static void main(String[] args) {
+        System.out.println("dasdasdads");
+        SpringApplication.run(Main.class, args);
         ConsoleUtils cons = new ConsoleUtils();
         boolean IsNotEnded = true;
         DataBaseStmtUtils db = new DataBaseStmtUtils();
@@ -59,6 +64,7 @@ public class Main {
                 }
                 case 3 -> {
                     IsNotEnded = false;
+
                 }
                 default -> cons.println("Введено неверное значение");
             }
