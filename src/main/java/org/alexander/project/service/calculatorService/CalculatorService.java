@@ -1,7 +1,10 @@
 package org.alexander.project.service.calculatorService;
 
+import org.springframework.stereotype.Service;
+
 import java.util.Scanner;
 
+@Service
 public class CalculatorService {
     public void perform() {
         Scanner scan = new Scanner(System.in);

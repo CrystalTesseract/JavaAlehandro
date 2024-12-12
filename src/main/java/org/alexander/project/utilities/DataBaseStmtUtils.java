@@ -1,12 +1,14 @@
 package org.alexander.project.utilities;
 
 import lombok.SneakyThrows;
+import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
+@Repository
 public class DataBaseStmtUtils implements DataBaseUtils {
     private static final String url = "jdbc:postgresql://localhost:5432/postgres";
     private static final String user = "user";

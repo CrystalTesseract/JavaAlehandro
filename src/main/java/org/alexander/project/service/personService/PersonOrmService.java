@@ -1,5 +1,6 @@
 package org.alexander.project.service.personService;
 
+import lombok.RequiredArgsConstructor;
 import org.alexander.project.api.FnsApi;
 import org.alexander.project.entity.Person;
 import org.alexander.project.storage.Storage;
@@ -7,19 +8,21 @@ import org.alexander.project.utilities.ConsoleUtils;
 import org.alexander.project.utilities.DataBaseOrmUtils;
 import org.alexander.project.utilities.MailUtils;
 import org.alexander.project.utilities.PersonGeneratorUtils;
+import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.alexander.project.storage.Storage.nextId;
 
+@Service
+@RequiredArgsConstructor
 public class PersonOrmService {
-
-    DataBaseOrmUtils db = new DataBaseOrmUtils();
-    PersonGeneratorUtils fakeNamer = new PersonGeneratorUtils();
-    ConsoleUtils cons = new ConsoleUtils();
-    MailUtils mail = new MailUtils();
-    FnsApi fnsApi = new FnsApi();
+    final DataBaseOrmUtils db;
+    final PersonGeneratorUtils fakeNamer;
+    final ConsoleUtils cons;
+    final MailUtils mail;
+    final FnsApi fnsApi;
 
     public void perform() {
         db.openSession();

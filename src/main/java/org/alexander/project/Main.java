@@ -8,6 +8,7 @@ import org.alexander.project.utilities.ConsoleUtils;
 import org.alexander.project.utilities.DataBaseStmtUtils;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -16,17 +17,19 @@ import java.util.concurrent.Future;
 @SpringBootApplication
 public class Main {
     static ExecutorService executor = Executors.newFixedThreadPool(1);
-    static PersonStmtService personStmtService = new PersonStmtService();
+    static PersonStmtService personStmtService;
     static CalculatorService calculatorService = new CalculatorService();
-    static PersonOrmService personOrmService = new PersonOrmService();
+    static PersonOrmService personOrmService;
     static Future<?> futurePersonOrmService = null;
     static Future<?> futurePersonStmtService = null;
     static Future<?> futureCalculator = null;
 
     @SneakyThrows
     public static void main(String[] args) {
-        System.out.println("dasdasdads");
-        SpringApplication.run(Main.class, args);
+        ApplicationContext context = SpringApplication.run(Main.class, args);
+        personStmtService = context.getBean(PersonStmtService.class);
+        calculatorService = context.getBean(CalculatorService.class);
+        personOrmService = context.getBean(PersonOrmService.class);
         ConsoleUtils cons = new ConsoleUtils();
         boolean IsNotEnded = true;
         DataBaseStmtUtils db = new DataBaseStmtUtils();

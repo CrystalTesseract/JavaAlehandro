@@ -1,11 +1,13 @@
 package org.alexander.project.service.personService;
 
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.alexander.project.api.FnsApi;
 import org.alexander.project.utilities.ConsoleUtils;
 import org.alexander.project.utilities.DataBaseStmtUtils;
 import org.alexander.project.utilities.MailUtils;
 import org.alexander.project.utilities.PersonGeneratorUtils;
+import org.springframework.stereotype.Service;
 
 import java.sql.ResultSet;
 import java.util.HashMap;
@@ -13,13 +15,15 @@ import java.util.Map;
 
 import static org.alexander.project.storage.Storage.nextId;
 
-
+@Service
+@RequiredArgsConstructor
 public class PersonStmtService {
-    PersonGeneratorUtils fakeNamer = new PersonGeneratorUtils();
-    DataBaseStmtUtils db = new DataBaseStmtUtils();
-    ConsoleUtils cons = new ConsoleUtils();
-    MailUtils mail = new MailUtils();
-    FnsApi fnsApi = new FnsApi();
+    final PersonGeneratorUtils fakeNamer;
+    final DataBaseStmtUtils db;
+    final ConsoleUtils cons;
+    final MailUtils mail;
+
+    private FnsApi fnsApi;
 
     @SneakyThrows
     public void perform() {
