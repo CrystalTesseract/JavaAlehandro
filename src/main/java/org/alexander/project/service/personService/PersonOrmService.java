@@ -18,11 +18,11 @@ import static org.alexander.project.storage.Storage.nextId;
 @Service
 @RequiredArgsConstructor
 public class PersonOrmService {
-    final DataBaseOrmUtils db;
-    final PersonGeneratorUtils fakeNamer;
-    final ConsoleUtils cons;
-    final MailUtils mail;
-    final FnsApi fnsApi;
+    final DataBaseOrmUtils db = new DataBaseOrmUtils();
+    final PersonGeneratorUtils fakeNamer = new PersonGeneratorUtils();
+    final ConsoleUtils cons = new ConsoleUtils();
+    final MailUtils mail = new MailUtils();
+    final FnsApi fnsApi = new FnsApi();
 
     public void perform() {
         db.openSession();

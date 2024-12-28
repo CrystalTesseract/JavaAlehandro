@@ -18,12 +18,13 @@ import static org.alexander.project.storage.Storage.nextId;
 @Service
 @RequiredArgsConstructor
 public class PersonStmtService {
-    final PersonGeneratorUtils fakeNamer;
-    final DataBaseStmtUtils db;
-    final ConsoleUtils cons;
-    final MailUtils mail;
+    final PersonGeneratorUtils fakeNamer = new PersonGeneratorUtils();
+    final DataBaseStmtUtils db = new DataBaseStmtUtils();
+    final ConsoleUtils cons = new ConsoleUtils();
+    final MailUtils mail = new MailUtils();
 
     private FnsApi fnsApi;
+
 
     @SneakyThrows
     public void perform() {

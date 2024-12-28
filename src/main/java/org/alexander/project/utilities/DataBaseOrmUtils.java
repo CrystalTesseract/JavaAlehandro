@@ -10,8 +10,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class DataBaseOrmUtils {
     private Session session;
-    @Autowired
-    private HibernateUtil hb;
+    private HibernateUtil hb = new HibernateUtil();
     private Transaction tx;
 
     public void openSession() {
