@@ -1,9 +1,10 @@
 package org.alexander.project.utilities;
 
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.Scanner;
-@Service
+@Component
 public class ConsoleUtils {
     private final Scanner scanner = new Scanner(System.in);
 

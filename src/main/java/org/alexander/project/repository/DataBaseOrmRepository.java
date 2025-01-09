@@ -1,14 +1,14 @@
-package org.alexander.project.utilities;
+package org.alexander.project.repository;
 
 
 import org.alexander.project.entity.Person;
+import org.alexander.project.utilities.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class DataBaseOrmUtils {
+public class DataBaseOrmRepository {
     private Session session;
     private HibernateUtil hb = new HibernateUtil();
     private Transaction tx;

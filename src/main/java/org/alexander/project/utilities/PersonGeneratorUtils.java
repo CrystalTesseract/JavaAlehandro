@@ -1,11 +1,12 @@
 package org.alexander.project.utilities;
 
 import com.github.javafaker.Faker;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.Random;
 
-@Service
+@Component
 public class PersonGeneratorUtils {
     private final Faker faker = new Faker();
 

@@ -5,7 +5,7 @@ import org.alexander.project.api.FnsApi;
 import org.alexander.project.entity.Person;
 import org.alexander.project.storage.Storage;
 import org.alexander.project.utilities.ConsoleUtils;
-import org.alexander.project.utilities.DataBaseOrmUtils;
+import org.alexander.project.repository.DataBaseOrmRepository;
 import org.alexander.project.utilities.MailUtils;
 import org.alexander.project.utilities.PersonGeneratorUtils;
 import org.springframework.stereotype.Service;
@@ -18,11 +18,11 @@ import static org.alexander.project.storage.Storage.nextId;
 @Service
 @RequiredArgsConstructor
 public class PersonOrmService {
-    final DataBaseOrmUtils db = new DataBaseOrmUtils();
-    final PersonGeneratorUtils fakeNamer = new PersonGeneratorUtils();
-    final ConsoleUtils cons = new ConsoleUtils();
-    final MailUtils mail = new MailUtils();
-    final FnsApi fnsApi = new FnsApi();
+    private final DataBaseOrmRepository db;
+    private final PersonGeneratorUtils fakeNamer;
+    private final ConsoleUtils cons;
+    private final MailUtils mail;
+    private final FnsApi fnsApi;
 
     public void perform() {
         db.openSession();

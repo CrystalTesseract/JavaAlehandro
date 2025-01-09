@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.alexander.project.api.FnsApi;
 import org.alexander.project.utilities.ConsoleUtils;
-import org.alexander.project.utilities.DataBaseStmtUtils;
+import org.alexander.project.repository.DataBaseStmtRepository;
 import org.alexander.project.utilities.MailUtils;
 import org.alexander.project.utilities.PersonGeneratorUtils;
 import org.springframework.stereotype.Service;
@@ -18,12 +18,11 @@ import static org.alexander.project.storage.Storage.nextId;
 @Service
 @RequiredArgsConstructor
 public class PersonStmtService {
-    final PersonGeneratorUtils fakeNamer = new PersonGeneratorUtils();
-    final DataBaseStmtUtils db = new DataBaseStmtUtils();
-    final ConsoleUtils cons = new ConsoleUtils();
-    final MailUtils mail = new MailUtils();
-
-    private FnsApi fnsApi;
+    private final PersonGeneratorUtils fakeNamer;
+    private final DataBaseStmtRepository db;
+    private final ConsoleUtils cons;
+    private final MailUtils mail;
+    private final FnsApi fnsApi;
 
 
     @SneakyThrows

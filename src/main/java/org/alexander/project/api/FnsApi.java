@@ -3,13 +3,14 @@ package org.alexander.project.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import org.alexander.project.api.dto.InnPersonDto;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-@Controller
+@Component
 public class FnsApi {
     private static final HttpClient client = HttpClient.newHttpClient();
 

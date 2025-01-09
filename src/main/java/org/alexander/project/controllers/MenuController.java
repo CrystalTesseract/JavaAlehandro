@@ -1,11 +1,12 @@
 package org.alexander.project.controllers;
 
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.alexander.project.service.calculatorService.CalculatorService;
 import org.alexander.project.service.personService.PersonOrmService;
 import org.alexander.project.service.personService.PersonStmtService;
 import org.alexander.project.utilities.ConsoleUtils;
-import org.alexander.project.utilities.DataBaseStmtUtils;
+import org.alexander.project.repository.DataBaseStmtRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -14,12 +15,15 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 @Controller
+@RequiredArgsConstructor
 public class MenuController {
 
     static ExecutorService executor = Executors.newFixedThreadPool(1);
-    static PersonStmtService personStmtService;
-    static CalculatorService calculatorService = new CalculatorService();
-    static PersonOrmService personOrmService;
+    private final PersonStmtService personStmtService;
+    private final CalculatorService calculatorService;
+    private final PersonOrmService personOrmService;
+    private final ConsoleUtils cons;
+    private final DataBaseStmtRepository db;
     static Future<?> futurePersonOrmService = null;
     static Future<?> futurePersonStmtService = null;
     static Future<?> futureCalculator = null;
@@ -27,12 +31,7 @@ public class MenuController {
     @SneakyThrows
     @GetMapping("/startProgramm")
     public String start() {
-        personStmtService = new PersonStmtService();
-        calculatorService = new CalculatorService();
-        personOrmService = new PersonOrmService();
-        ConsoleUtils cons = new ConsoleUtils();
         boolean IsNotEnded = true;
-        DataBaseStmtUtils db = new DataBaseStmtUtils();
         db.setConnection();
         db.dropPersonTable();
         db.createPersonTable();
@@ -77,3 +76,4 @@ public class MenuController {
         return "Программа завершила цикл работы!";
     }
 }
+

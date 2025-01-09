@@ -1,4 +1,4 @@
-package org.alexander.project.utilities;
+package org.alexander.project.repository;
 
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Repository;
@@ -9,7 +9,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 
 @Repository
-public class DataBaseStmtUtils implements DataBaseUtils {
+public class DataBaseStmtRepository {
     private static final String url = "jdbc:postgresql://localhost:5432/postgres";
     private static final String user = "user";
     private static final String password = "password";

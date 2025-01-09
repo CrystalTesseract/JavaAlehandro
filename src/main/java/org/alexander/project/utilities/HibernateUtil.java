@@ -2,9 +2,10 @@ package org.alexander.project.utilities;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
-@Repository
+@Component
 public class HibernateUtil {
     private final SessionFactory sessionFactory() {
         return new Configuration().configure().buildSessionFactory();
