@@ -3,9 +3,9 @@ package org.alexander.project.service.personService;
 import lombok.RequiredArgsConstructor;
 import org.alexander.project.api.FnsApi;
 import org.alexander.project.entity.Person;
+import org.alexander.project.repository.DataBaseJpaRepository;
 import org.alexander.project.storage.Storage;
 import org.alexander.project.utilities.ConsoleUtils;
-import org.alexander.project.repository.DataBaseOrmRepository;
 import org.alexander.project.utilities.MailUtils;
 import org.alexander.project.utilities.PersonGeneratorUtils;
 import org.springframework.stereotype.Service;
@@ -17,15 +17,14 @@ import static org.alexander.project.storage.Storage.nextId;
 
 @Service
 @RequiredArgsConstructor
-public class PersonOrmService {
-    private final DataBaseOrmRepository db;
+public class PersonJpaService {
+    private final DataBaseJpaRepository db;
     private final PersonGeneratorUtils fakeNamer;
     private final ConsoleUtils cons;
     private final MailUtils mail;
     private final FnsApi fnsApi;
 
     public void perform() {
-        db.openSession();
         mail.setProperties();
 
         String personName = null;
@@ -42,31 +41,26 @@ public class PersonOrmService {
             cons.nextLine();
             switch (choice) {
                 case 0 -> {
-                    db.closeSession();
                     return;
                 }
                 case 1 -> {
-                    db.startTransaction();
                     for (int i = 0; i < Storage.getId(); i++) {
-                        Person person = (Person) db.load(i);
+                        Person person = db.findById(i).orElseThrow(() -> new IllegalArgumentException("Person not found"));
                         cons.println("ID:" + person.getId() + " | Name:" + person.getName() + " | Age:" + person.getAge() + " | Email:" + person.getEmail() + " | INN:" + person.getInn());
                     }
                     System.out.print("Введите ID личности>>>");
                     int id = cons.getInt();
-                    Person person = (Person) db.load(id);
+                    Person person = db.findById(id).orElseThrow(() -> new IllegalArgumentException("Person not found"));
                     String organizationData = fnsApi.findOrganizationData(person.getInn()).toString();
                     person.setOrganizationdata(organizationData);
                     db.save(person);
-                    db.commitTransaction();
                     cons.println(organizationData);
                 }
                 case 2 -> {
-                    db.startTransaction();
                     for (int i = 0; i < Storage.getId(); i++) {
-                        Person person = (Person) db.load(i);
+                        Person person = db.findById(i).orElseThrow(() -> new IllegalArgumentException("Person not found"));
                         cons.println("ID:" + person.getId() + " | Name:" + person.getName() + " | Age:" + person.getAge() + " | Email:" + person.getEmail() + " | INN:" + person.getInn());
                     }
-                    db.commitTransaction();
                 }
                 case 3 -> {
                     cons.println("Отправьте имя персоны, а затем отправьте возраст:");
@@ -80,10 +74,7 @@ public class PersonOrmService {
                     person.setEmail(fakeNamer.generateEmail());
                     person.setId(nextId());
                     person.setInn(fakeNamer.generateInn());
-
-                    db.startTransaction();
                     db.save(person);
-                    db.commitTransaction();
                 }
                 case 4 -> {
                     cons.print("Отправьте целое число n >>> ");
@@ -97,9 +88,7 @@ public class PersonOrmService {
                         person.setName(fakeNamer.generateName());
                         person.setEmail(fakeNamer.generateEmail());
                         person.setId(nextId());
-                        db.startTransaction();
                         db.save(person);
-                        db.commitTransaction();
                     }
                 }
                 case 5 -> {
@@ -115,24 +104,19 @@ public class PersonOrmService {
                     person.setName(personName);
                     person.setEmail(realEmail);
                     person.setId(nextId());
-                    db.startTransaction();
                     db.save(person);
-                    db.commitTransaction();
                 }
                 case 6 -> {
-                    db.startTransaction();
                     for (int i = 0; i < Storage.getId(); i++) {
-                        Person person = (Person) db.load(i);
+                        Person person = db.findById(i).orElse(null);
                         mail.sendFakeMessage(person.getEmail());
                     }
-                    db.commitTransaction();
 
                 }
                 case 7 -> {
                     Map<Integer, String> emails = new HashMap<>();
-                    db.startTransaction();
                     for (int i = 0; i < Storage.getId(); i++) {
-                        Person person = (Person) db.load(i);
+                        Person person = db.findById(i).orElse(null);
                         cons.println("ID:" + person.getId() + " | Name:" + person.getName() + " | Age:" + person.getAge() + " | Email:" + person.getEmail() + " | INN:" + person.getInn());
                         emails.put(person.getId(), person.getEmail());
                     }
@@ -143,9 +127,8 @@ public class PersonOrmService {
                 }
                 case 8 -> {
                     Map<Integer, String> emails = new HashMap<>();
-                    db.startTransaction();
                     for (int i = 0; i < Storage.getId(); i++) {
-                        Person person = (Person) db.load(i);
+                        Person person = db.findById(i).orElse(null);
                         cons.println("ID:" + person.getId() + " | Name:" + person.getName() + " | Age:" + person.getAge() + " | Email:" + person.getEmail() + " | INN:" + person.getInn());
                         emails.put(person.getId(), person.getEmail());
                     }
@@ -161,9 +144,7 @@ public class PersonOrmService {
                     person.setId(nextId());
                     person.setAge(52);
                     person.setName("Сергей");
-                    db.startTransaction();
                     db.save(person);
-                    db.commitTransaction();
                 }
             }
         }

@@ -3,6 +3,7 @@ package org.alexander.project.controllers;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.alexander.project.service.calculatorService.CalculatorService;
+import org.alexander.project.service.personService.PersonJpaService;
 import org.alexander.project.service.personService.PersonOrmService;
 import org.alexander.project.service.personService.PersonStmtService;
 import org.alexander.project.utilities.ConsoleUtils;
@@ -22,8 +23,10 @@ public class MenuController {
     private final PersonStmtService personStmtService;
     private final CalculatorService calculatorService;
     private final PersonOrmService personOrmService;
+    private final PersonJpaService personJpaService;
     private final ConsoleUtils cons;
     private final DataBaseStmtRepository db;
+    static Future<?> futurePersonJpaService = null;
     static Future<?> futurePersonOrmService = null;
     static Future<?> futurePersonStmtService = null;
     static Future<?> futureCalculator = null;
@@ -46,7 +49,7 @@ public class MenuController {
                     futureCalculator.get();
                 }
                 case 2 -> {
-                    cons.print("Использовать...: 1 - Statement, 2 - Hibernate >>> ");
+                    cons.print("Использовать...: 1 - Statement, 2 - Hibernate, 3 - JPA >>> ");
                     int secondChoice = cons.getInt();
                     switch (secondChoice) {
                         case 1 -> {
@@ -60,6 +63,12 @@ public class MenuController {
                                 futurePersonOrmService = executor.submit(() -> personOrmService.perform());
                             }
                             futurePersonOrmService.get();
+                        }
+                        case 3 -> {
+                            if (futurePersonJpaService == null || futurePersonJpaService.isDone()) {
+                                futurePersonJpaService = executor.submit(() -> personJpaService.perform());
+                            }
+                            futurePersonJpaService.get();
                         }
                         default -> cons.println("Введено неверное значение");
                     }

@@ -1,25 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
     <session-factory>
-        <!-- JDBC Database connection settings -->
+        <!-- JDBC настройки -->
         <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
         <property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/postgres</property>
         <property name="hibernate.connection.username">user</property>
         <property name="hibernate.connection.password">password</property>
 
-        <!-- JDBC connection pool settings -->
-        <property name="hibernate.c3p0.min_size">5</property>
-        <property name="hibernate.c3p0.max_size">20</property>
-
-        <property name="hibernate.show_sql">false</property>
-        <property name="hibernate.format_sql">false</property>
-        <property name="hibernate.use_sql_comments">false</property>
-
-        <!-- SQL dialect -->
+        <!-- Диалект Hibernate -->
         <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
 
-
-        <!-- Automatically creates or updates the schema -->
+        <!-- Автоматическое создание/обновление таблиц -->
         <property name="hibernate.hbm2ddl.auto">update</property>
+
+        <!-- Настройки логгирования -->
+        <property name="hibernate.show_sql">false</property>
+        <property name="hibernate.format_sql">false</property>
+
+        <!-- Кэширование (опционально) -->
+        <property name="hibernate.cache.use_second_level_cache">false</property>
+
+        <!-- Укажите ваши entity-классы -->
         <mapping class="org.alexander.project.entity.Person"/>
     </session-factory>
 </hibernate-configuration>
