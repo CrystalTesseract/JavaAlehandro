@@ -8,7 +8,6 @@ import org.hibernate.Transaction;
 import org.springframework.stereotype.Repository;
 
 
-
 @Repository
 public class DataBaseOrmRepository {
     private Session session;
