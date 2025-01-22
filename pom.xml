@@ -30,10 +30,11 @@
             <version>1.18.32</version>
             <scope>provided</scope>
         </dependency>
-
-
-
-
+        <dependency>
+            <groupId>net.n2oapp.criteria</groupId>
+            <artifactId>criteria-api</artifactId>
+            <version>7.4.0</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>

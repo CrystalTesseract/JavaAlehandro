@@ -1,5 +1,6 @@
 package org.alexander.project.service.personService;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.RequiredArgsConstructor;
 import org.alexander.project.api.FnsApi;
 import org.alexander.project.entity.Person;
@@ -23,6 +24,7 @@ public class PersonJpaService {
     private final ConsoleUtils cons;
     private final MailUtils mail;
     private final FnsApi fnsApi;
+
 
     public void perform() {
         mail.setProperties();
