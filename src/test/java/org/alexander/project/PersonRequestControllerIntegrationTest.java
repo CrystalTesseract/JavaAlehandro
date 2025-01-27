@@ -1,8 +1,11 @@
 package org.alexander.project;
 
+import lombok.RequiredArgsConstructor;
 import org.alexander.project.config.IntegrationTestBase;
 import org.alexander.project.entity.Person;
-import org.junit.Test;
+import org.alexander.project.repository.DataBaseJpaRepository;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MvcResult;
@@ -15,11 +18,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
-@Sql(scripts = {"/data.sql"})
+
 public class PersonRequestControllerIntegrationTest extends IntegrationTestBase {
+    @Autowired
+    private DataBaseJpaRepository db;
 
     @Test
     public void testSearchPerson() throws Exception {
+        Person person = new Person("John", 13);
+        db.save(person);
         String name = "John";
         int page = 1;
 

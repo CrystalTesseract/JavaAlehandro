@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DiffGenerationConfig">
+    <option name="sourceDbValue" value="8e62e89b-c0a6-40bf-83a5-e08180cd8c67__postgres_public" />
+    <option name="sourceDiffType" value="DB" />
+    <option name="sourceModelValue" value="Default" />
+    <option name="targetDbValue" value="8e62e89b-c0a6-40bf-83a5-e08180cd8c67__postgres_public" />
+  </component>
+</project>
