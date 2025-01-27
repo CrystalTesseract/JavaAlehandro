@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 
-public class PersonRequestControllerIntegrationTest extends IntegrationTestBase {
+public class PersonControllerIntegrationTest extends IntegrationTestBase {
     @Autowired
     private DataBaseJpaRepository db;
 

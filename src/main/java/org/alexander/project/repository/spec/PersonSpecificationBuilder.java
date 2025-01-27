@@ -1,4 +1,4 @@
-package org.alexander.project.controllers.person.spec;
+package org.alexander.project.repository.spec;
 
 public class PersonSpecificationBuilder {
     private String name = null;

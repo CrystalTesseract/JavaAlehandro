@@ -1,4 +1,4 @@
-package org.alexander.project.controllers.person.spec;
+package org.alexander.project.repository.spec;
 
 import jakarta.annotation.Nullable;
 import jakarta.persistence.criteria.CriteriaBuilder;
