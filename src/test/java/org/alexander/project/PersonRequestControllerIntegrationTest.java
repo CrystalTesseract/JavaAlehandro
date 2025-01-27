@@ -1,48 +1,41 @@
 package org.alexander.project;
 
 import org.alexander.project.config.IntegrationTestBase;
-import org.junit.Before;
+import org.alexander.project.entity.Person;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql(scripts = {"/data.sql"})
 public class PersonRequestControllerIntegrationTest extends IntegrationTestBase {
-
-    @Autowired
-    private TestRestTemplate restTemplate;
-
-    @LocalServerPort
-    private int port;
-
     @Test
     public void testSearchPerson() {
-        String baseUrl = "http://localhost:" + port + "/personService/search?searchCriteria=name&searchParam=John&page=1";
-        ResponseEntity<List> response = restTemplate.getForEntity(baseUrl, List.class);
+        String name = "John";
+        int page = 1;
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isNotEmpty();
+        List<Person> persons = webTestClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/personService/search")
+                        .queryParam("name", name)
+                        .queryParam("page", page)
+                        .build())
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBodyList(Person.class)  // Указываем, что ожидаем список объектов Person
+                .returnResult()
+                .getResponseBody();
+
+        // Проверяем результаты
+        assertThat(persons).isNotNull();
+        assertThat(persons).isNotEmpty();
+        assertThat(persons.get(0).getName()).isEqualTo(name);
     }
 
-    @TestConfiguration
-    static class TestConfig {
-        @Bean
-        public TestRestTemplate restTemplate() {
-            return new TestRestTemplate();
-        }
-    }
+
 }
 
