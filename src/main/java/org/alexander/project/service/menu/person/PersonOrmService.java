@@ -1,4 +1,4 @@
-package org.alexander.project.menu.person;
+package org.alexander.project.service.menu.person;
 
 import lombok.RequiredArgsConstructor;
 import org.alexander.project.api.FnsApi;

@@ -1,15 +1,15 @@
-package org.alexander.project.menu.person;
+package org.alexander.project.service.menu.person;
 
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.alexander.project.api.FnsApi;
+import org.alexander.project.entity.Person;
+import org.alexander.project.repository.DataBaseJpaRepository;
+import org.alexander.project.storage.Storage;
 import org.alexander.project.utilities.ConsoleUtils;
-import org.alexander.project.repository.DataBaseStmtRepository;
 import org.alexander.project.utilities.MailUtils;
 import org.alexander.project.utilities.PersonGeneratorUtils;
 import org.springframework.stereotype.Service;
 
-import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,15 +17,14 @@ import static org.alexander.project.storage.Storage.nextId;
 
 @Service
 @RequiredArgsConstructor
-public class PersonStmtService {
+public class PersonJpaService {
+    private final DataBaseJpaRepository db;
     private final PersonGeneratorUtils fakeNamer;
-    private final DataBaseStmtRepository db;
     private final ConsoleUtils cons;
     private final MailUtils mail;
     private final FnsApi fnsApi;
 
 
-    @SneakyThrows
     public void perform() {
         mail.setProperties();
 
@@ -37,54 +36,60 @@ public class PersonStmtService {
         mail.createRealMessage("Тестовое письмо. Если вы случайно его получили - забейте.");
         mail.createFakeMessage("Наша компания по производству компаний приветствует вас! Мы предлагаем вам открыть компанию через нашу компанию для продвижения компаний.");
 
-
         while (!Thread.currentThread().isInterrupted()) {
             cons.print("Выберите операцию: 0 - вернуться к выбору программ, 1 - Получить данные по ИНН личности, 2 - просмотреть личности из таблицы, 3 - добавить личность, 4 - добавить n случайных личностей, 5 - добавить личность с почтой, 6 - разослать всем личностям приветственное письмо, 7 - отправить конкретной личности приветственное письмо, 8 - отправить конкретной личности реальное письмо >>> ");
-            int d = cons.getInt();
+            int choice = cons.getInt();
             cons.nextLine();
-            switch (d) {
+            switch (choice) {
                 case 0 -> {
                     return;
                 }
                 case 1 -> {
-                    ResultSet rs = db.getPersonTable();
-                    while (rs.next()) {
-                        cons.println("ID:" + rs.getInt("id") + " | Name:" + rs.getString("name") + " | Age:" + rs.getInt("age") + " | Email:" + rs.getString("email") + " | INN:" + rs.getString("inn"));
+                    for (int i = 0; i < Storage.getId(); i++) {
+                        Person person = db.findById(i).orElseThrow(() -> new IllegalArgumentException("Person not found"));
+                        cons.println("ID:" + person.getId() + " | Name:" + person.getName() + " | Age:" + person.getAge() + " | Email:" + person.getEmail() + " | INN:" + person.getInn());
                     }
                     System.out.print("Введите ID личности>>>");
                     int id = cons.getInt();
-                    String organizationData = fnsApi.findOrganizationData(db.getInn(id)).toString();
-                    db.insertOrganizationData(id, organizationData);
-                    System.out.println(organizationData);
+                    Person person = db.findById(id).orElseThrow(() -> new IllegalArgumentException("Person not found"));
+                    String organizationData = fnsApi.findOrganizationData(person.getInn()).toString();
+                    person.setOrganizationdata(organizationData);
+                    db.save(person);
+                    cons.println(organizationData);
                 }
                 case 2 -> {
-                    ResultSet rs = db.getPersonTable();
-                    while (rs.next()) {
-                        cons.println("ID:" + rs.getInt("id") + " | Name:" + rs.getString("name") + " | Age:" + rs.getInt("age") + " | Email:" + rs.getString("email") + " | INN:" + rs.getString("inn"));
+                    for (int i = 0; i < Storage.getId(); i++) {
+                        Person person = db.findById(i).orElseThrow(() -> new IllegalArgumentException("Person not found"));
+                        cons.println("ID:" + person.getId() + " | Name:" + person.getName() + " | Age:" + person.getAge() + " | Email:" + person.getEmail() + " | INN:" + person.getInn());
                     }
                 }
                 case 3 -> {
                     cons.println("Отправьте имя персоны, а затем отправьте возраст:");
-
+                    Person person = new Person();
                     personName = cons.getLine();
                     personAge = cons.getInt();
                     cons.nextLine();
 
-                    fakeEmail = fakeNamer.generateEmail();
-
-                    db.insertPerson(nextId(), personName, personAge, fakeEmail, fakeNamer.generateInn());
+                    person.setName(personName);
+                    person.setAge(personAge);
+                    person.setEmail(fakeNamer.generateEmail());
+                    person.setId(nextId());
+                    person.setInn(fakeNamer.generateInn());
+                    db.save(person);
                 }
                 case 4 -> {
                     cons.print("Отправьте целое число n >>> ");
                     int n = cons.getInt();
                     cons.nextLine();
                     for (int i = 0; i < n; i++) {
-                        fakePersonName = fakeNamer.generateName();
                         fakePersonAge = (int) Math.round(Math.random() * 120);
-                        fakeEmail = fakeNamer.generateEmail();
-
-
-                        db.insertPerson(nextId(), fakePersonName, fakePersonAge, fakeEmail, fakeNamer.generateInn());
+                        Person person = new Person();
+                        person.setAge(fakePersonAge);
+                        person.setInn(fakeNamer.generateInn());
+                        person.setName(fakeNamer.generateName());
+                        person.setEmail(fakeNamer.generateEmail());
+                        person.setId(nextId());
+                        db.save(person);
                     }
                 }
                 case 5 -> {
@@ -93,23 +98,28 @@ public class PersonStmtService {
                     cons.println("Отправьте имя персоны, а затем отправьте возраст:");
                     personName = cons.getLine();
                     personAge = cons.getInt();
-
                     cons.nextLine();
-
-                    db.insertPerson(nextId(), personName, personAge, realEmail, fakeNamer.generateInn());
+                    Person person = new Person();
+                    person.setAge(personAge);
+                    person.setInn(fakeNamer.generateInn());
+                    person.setName(personName);
+                    person.setEmail(realEmail);
+                    person.setId(nextId());
+                    db.save(person);
                 }
                 case 6 -> {
-                    ResultSet rs = db.ZexecuteQuery("select * from person");
-                    while (rs.next()) {
-                        mail.sendFakeMessage(rs.getString("email"));
+                    for (int i = 0; i < Storage.getId(); i++) {
+                        Person person = db.findById(i).orElse(null);
+                        mail.sendFakeMessage(person.getEmail());
                     }
+
                 }
                 case 7 -> {
-                    ResultSet rs = db.getPersonTable();
                     Map<Integer, String> emails = new HashMap<>();
-                    while (rs.next()) {
-                        cons.println("ID:" + rs.getInt("id") + " | Name:" + rs.getString("name") + " | Age:" + rs.getInt("age") + " | Email:" + rs.getString("email") + " | INN:" + rs.getString("inn"));
-                        emails.put(rs.getInt("id"), rs.getString("email"));
+                    for (int i = 0; i < Storage.getId(); i++) {
+                        Person person = db.findById(i).orElse(null);
+                        cons.println("ID:" + person.getId() + " | Name:" + person.getName() + " | Age:" + person.getAge() + " | Email:" + person.getEmail() + " | INN:" + person.getInn());
+                        emails.put(person.getId(), person.getEmail());
                     }
                     cons.print("Отправьте ID получателя >>>");
                     int claimerId = cons.getInt();
@@ -117,11 +127,11 @@ public class PersonStmtService {
                     mail.sendFakeMessage(emails.get(claimerId));
                 }
                 case 8 -> {
-                    ResultSet rs = db.getPersonTable();
                     Map<Integer, String> emails = new HashMap<>();
-                    while (rs.next()) {
-                        cons.println("ID:" + rs.getInt("id") + " | Name:" + rs.getString("name") + " | Age:" + rs.getInt("age") + " | Email:" + rs.getString("email") + " | INN:" + rs.getString("inn"));
-                        emails.put(rs.getInt("id"), rs.getString("email"));
+                    for (int i = 0; i < Storage.getId(); i++) {
+                        Person person = db.findById(i).orElse(null);
+                        cons.println("ID:" + person.getId() + " | Name:" + person.getName() + " | Age:" + person.getAge() + " | Email:" + person.getEmail() + " | INN:" + person.getInn());
+                        emails.put(person.getId(), person.getEmail());
                     }
                     cons.print("Отправьте ID получателя >>>");
                     int claimerId = cons.getInt();
@@ -129,10 +139,15 @@ public class PersonStmtService {
                     mail.sendRealMessage(emails.get(claimerId));
                 }
                 case 777 -> {
-                    db.insertPerson(nextId(), "Сергей", 52, "SeregaVaga@dota.tv", "507407629014");
+                    Person person = new Person();
+                    person.setInn("507407629014");
+                    person.setEmail("SeregaVaga@dota.tv");
+                    person.setId(nextId());
+                    person.setAge(52);
+                    person.setName("Сергей");
+                    db.save(person);
                 }
             }
         }
     }
 }
-

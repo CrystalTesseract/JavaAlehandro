@@ -1,4 +1,4 @@
-package org.alexander.project.menu.calculator;
+package org.alexander.project.service.menu.calculator;
 
 import org.springframework.stereotype.Service;
 
