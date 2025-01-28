@@ -30,7 +30,8 @@ public class PersonDto {
         this.inn = person.getInn();
     }
 
-    public PersonDto() {}
+    public PersonDto() {
+    }
 
     public PersonDto(int id, String name, int age, String email, String inn) {
         this.id = id;

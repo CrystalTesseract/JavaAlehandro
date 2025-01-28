@@ -54,11 +54,11 @@ public class PersonController {
     @SneakyThrows
     @GetMapping("/search")
     public List<PersonDto> search(@RequestParam(required = false) String name,
-                               @RequestParam(required = false) Integer age,
-                               @RequestParam(required = false) String email,
-                               @RequestParam(required = false) String inn,
-                               @RequestParam(required = false) String organizationdata,
-                               @RequestParam int page) {
+                                  @RequestParam(required = false) Integer age,
+                                  @RequestParam(required = false) String email,
+                                  @RequestParam(required = false) String inn,
+                                  @RequestParam(required = false) String organizationdata,
+                                  @RequestParam int page) {
         PersonSpecification specification = new PersonSpecificationBuilder()
                 .withName(name)
                 .withAge(age)
