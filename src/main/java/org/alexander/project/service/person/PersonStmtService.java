@@ -1,4 +1,4 @@
-package org.alexander.project.service.personService;
+package org.alexander.project.service.person;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;

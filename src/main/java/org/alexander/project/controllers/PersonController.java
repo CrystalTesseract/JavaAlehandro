@@ -3,6 +3,7 @@ package org.alexander.project.controllers;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.alexander.project.controllers.dto.PersonDto;
 import org.alexander.project.entity.Person;
 import org.alexander.project.repository.DataBaseJpaRepository;
 import org.alexander.project.repository.spec.PersonSpecification;
@@ -17,30 +18,29 @@ import static org.alexander.project.storage.Storage.nextId;
 
 @Tag(name = "person_methods")
 @RestController
-@RequestMapping("/v1/personService")
+@RequestMapping("/v1/persons")
 @RequiredArgsConstructor
-public class PersonController { //Тут пометочка с вопросом: нужно делать слой "/api/" между адрессом и персон сервисом? Если да, то делать через наследование от класса, который будет лежать в пакете (api или controllers?)?
+public class PersonController {
     private final DataBaseJpaRepository db;
 
 
     @SneakyThrows
-    @GetMapping("/get_by_id")
-    public Person getPerson(@RequestParam int id) {
-        Person person = db.findById(id).orElseThrow(() -> new IllegalArgumentException("Person not found"));
-        return person;
+    @GetMapping
+    public PersonDto getPerson(@RequestParam int id) {
+        return new PersonDto(db.findById(id).orElseThrow(() -> new IllegalArgumentException("Person not found")));
     }
 
     @SneakyThrows
-    @PostMapping("/create")
-    public String createPerson(@RequestBody Person person) {
+    @PostMapping
+    public String createPerson(@RequestBody PersonDto person) {
         person.setId(nextId());
-        db.save(person);
+        db.save(person.toPerson());
         return "Создано!";
     }
 
     @SneakyThrows
-    @PutMapping("/edit")
-    public String edit(@RequestBody Person person) {
+    @PutMapping
+    public String edit(@RequestBody PersonDto person) {
         Person localPerson = db.findById(person.getId()).orElseThrow(() -> new IllegalArgumentException("Person not found"));
         localPerson.setName(person.getName());
         localPerson.setAge(person.getAge());
@@ -53,7 +53,7 @@ public class PersonController { //Тут пометочка с вопросом:
 
     @SneakyThrows
     @GetMapping("/search")
-    public List<Person> search(@RequestParam(required = false) String name,
+    public List<PersonDto> search(@RequestParam(required = false) String name,
                                @RequestParam(required = false) Integer age,
                                @RequestParam(required = false) String email,
                                @RequestParam(required = false) String inn,

@@ -65,4 +65,6 @@ public class Person {
         this.inn = inn;
         this.organizationdata = null;
     }
+
+
 }

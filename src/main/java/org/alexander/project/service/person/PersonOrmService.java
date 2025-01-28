@@ -1,12 +1,11 @@
-package org.alexander.project.service.personService;
+package org.alexander.project.service.person;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.RequiredArgsConstructor;
 import org.alexander.project.api.FnsApi;
 import org.alexander.project.entity.Person;
-import org.alexander.project.repository.DataBaseJpaRepository;
 import org.alexander.project.storage.Storage;
 import org.alexander.project.utilities.ConsoleUtils;
+import org.alexander.project.repository.DataBaseOrmRepository;
 import org.alexander.project.utilities.MailUtils;
 import org.alexander.project.utilities.PersonGeneratorUtils;
 import org.springframework.stereotype.Service;
@@ -18,15 +17,15 @@ import static org.alexander.project.storage.Storage.nextId;
 
 @Service
 @RequiredArgsConstructor
-public class PersonJpaService {
-    private final DataBaseJpaRepository db;
+public class PersonOrmService {
+    private final DataBaseOrmRepository db;
     private final PersonGeneratorUtils fakeNamer;
     private final ConsoleUtils cons;
     private final MailUtils mail;
     private final FnsApi fnsApi;
 
-
     public void perform() {
+        db.openSession();
         mail.setProperties();
 
         String personName = null;
@@ -43,26 +42,31 @@ public class PersonJpaService {
             cons.nextLine();
             switch (choice) {
                 case 0 -> {
+                    db.closeSession();
                     return;
                 }
                 case 1 -> {
+                    db.startTransaction();
                     for (int i = 0; i < Storage.getId(); i++) {
-                        Person person = db.findById(i).orElseThrow(() -> new IllegalArgumentException("Person not found"));
+                        Person person = (Person) db.load(i);
                         cons.println("ID:" + person.getId() + " | Name:" + person.getName() + " | Age:" + person.getAge() + " | Email:" + person.getEmail() + " | INN:" + person.getInn());
                     }
                     System.out.print("Введите ID личности>>>");
                     int id = cons.getInt();
-                    Person person = db.findById(id).orElseThrow(() -> new IllegalArgumentException("Person not found"));
+                    Person person = (Person) db.load(id);
                     String organizationData = fnsApi.findOrganizationData(person.getInn()).toString();
                     person.setOrganizationdata(organizationData);
                     db.save(person);
+                    db.commitTransaction();
                     cons.println(organizationData);
                 }
                 case 2 -> {
+                    db.startTransaction();
                     for (int i = 0; i < Storage.getId(); i++) {
-                        Person person = db.findById(i).orElseThrow(() -> new IllegalArgumentException("Person not found"));
+                        Person person = (Person) db.load(i);
                         cons.println("ID:" + person.getId() + " | Name:" + person.getName() + " | Age:" + person.getAge() + " | Email:" + person.getEmail() + " | INN:" + person.getInn());
                     }
+                    db.commitTransaction();
                 }
                 case 3 -> {
                     cons.println("Отправьте имя персоны, а затем отправьте возраст:");
@@ -76,7 +80,10 @@ public class PersonJpaService {
                     person.setEmail(fakeNamer.generateEmail());
                     person.setId(nextId());
                     person.setInn(fakeNamer.generateInn());
+
+                    db.startTransaction();
                     db.save(person);
+                    db.commitTransaction();
                 }
                 case 4 -> {
                     cons.print("Отправьте целое число n >>> ");
@@ -90,7 +97,9 @@ public class PersonJpaService {
                         person.setName(fakeNamer.generateName());
                         person.setEmail(fakeNamer.generateEmail());
                         person.setId(nextId());
+                        db.startTransaction();
                         db.save(person);
+                        db.commitTransaction();
                     }
                 }
                 case 5 -> {
@@ -106,19 +115,24 @@ public class PersonJpaService {
                     person.setName(personName);
                     person.setEmail(realEmail);
                     person.setId(nextId());
+                    db.startTransaction();
                     db.save(person);
+                    db.commitTransaction();
                 }
                 case 6 -> {
+                    db.startTransaction();
                     for (int i = 0; i < Storage.getId(); i++) {
-                        Person person = db.findById(i).orElse(null);
+                        Person person = (Person) db.load(i);
                         mail.sendFakeMessage(person.getEmail());
                     }
+                    db.commitTransaction();
 
                 }
                 case 7 -> {
                     Map<Integer, String> emails = new HashMap<>();
+                    db.startTransaction();
                     for (int i = 0; i < Storage.getId(); i++) {
-                        Person person = db.findById(i).orElse(null);
+                        Person person = (Person) db.load(i);
                         cons.println("ID:" + person.getId() + " | Name:" + person.getName() + " | Age:" + person.getAge() + " | Email:" + person.getEmail() + " | INN:" + person.getInn());
                         emails.put(person.getId(), person.getEmail());
                     }
@@ -129,8 +143,9 @@ public class PersonJpaService {
                 }
                 case 8 -> {
                     Map<Integer, String> emails = new HashMap<>();
+                    db.startTransaction();
                     for (int i = 0; i < Storage.getId(); i++) {
-                        Person person = db.findById(i).orElse(null);
+                        Person person = (Person) db.load(i);
                         cons.println("ID:" + person.getId() + " | Name:" + person.getName() + " | Age:" + person.getAge() + " | Email:" + person.getEmail() + " | INN:" + person.getInn());
                         emails.put(person.getId(), person.getEmail());
                     }
@@ -146,7 +161,9 @@ public class PersonJpaService {
                     person.setId(nextId());
                     person.setAge(52);
                     person.setName("Сергей");
+                    db.startTransaction();
                     db.save(person);
+                    db.commitTransaction();
                 }
             }
         }
