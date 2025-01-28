@@ -1,5 +1,6 @@
 package org.alexander.project.controllers;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.alexander.project.entity.Person;
@@ -14,6 +15,7 @@ import java.util.List;
 
 import static org.alexander.project.storage.Storage.nextId;
 
+@Tag(name = "person_methods")
 @RestController
 @RequestMapping("/v1/personService")
 @RequiredArgsConstructor
