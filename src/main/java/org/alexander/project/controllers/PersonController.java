@@ -4,50 +4,40 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.alexander.project.controllers.dto.PersonDto;
-import org.alexander.project.entity.Person;
-import org.alexander.project.repository.DataBaseJpaRepository;
 import org.alexander.project.repository.spec.PersonSpecification;
 import org.alexander.project.repository.spec.PersonSpecificationBuilder;
+import org.alexander.project.service.PersonService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static org.alexander.project.storage.Storage.nextId;
-
 @Tag(name = "person_methods")
 @RestController
 @RequestMapping("/v1/persons")
 @RequiredArgsConstructor
 public class PersonController {
-    private final DataBaseJpaRepository db;
+    private final PersonService service;
 
 
     @SneakyThrows
     @GetMapping
     public PersonDto getPerson(@RequestParam int id) {
-        return new PersonDto(db.findById(id).orElseThrow(() -> new IllegalArgumentException("Person not found")));
+        return service.findById(id);
     }
 
     @SneakyThrows
     @PostMapping
     public String createPerson(@RequestBody PersonDto person) {
-        person.setId(nextId());
-        db.save(person.toPerson());
+        service.save(person.toPerson());
         return "Создано!";
     }
 
     @SneakyThrows
     @PutMapping
     public String edit(@RequestBody PersonDto person) {
-        Person localPerson = db.findById(person.getId()).orElseThrow(() -> new IllegalArgumentException("Person not found"));
-        localPerson.setName(person.getName());
-        localPerson.setAge(person.getAge());
-        localPerson.setInn(person.getInn());
-        localPerson.setEmail(person.getEmail());
-        localPerson.setOrganizationdata(person.getOrganizationdata());
-        db.save(localPerson);
+        service.update(person);
         return "Сохранения изменены!";
     }
 
@@ -68,7 +58,7 @@ public class PersonController {
                 .build();
 
         Pageable pageable = PageRequest.of(page - 1, 5);
-        return db.findAll(specification, pageable).getContent();
+        return service.findAll(specification, pageable);
     }
 
 }

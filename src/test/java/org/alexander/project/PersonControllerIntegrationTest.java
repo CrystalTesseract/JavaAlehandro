@@ -30,7 +30,7 @@ public class PersonControllerIntegrationTest extends IntegrationTestBase {
         String name = "John";
         int page = 1;
 
-        MvcResult mvcResult = mockMvc.perform(get("/personService/search")
+        MvcResult mvcResult = mockMvc.perform(get("/api/search")
                         .param("name", name)
                         .param("page", String.valueOf(page))
                         .accept(MediaType.APPLICATION_JSON))
