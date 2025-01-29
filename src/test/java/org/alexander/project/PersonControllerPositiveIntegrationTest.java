@@ -17,7 +17,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-public class PersonControllerIntegrationTest extends IntegrationTestBase {
+public class PersonControllerPositiveIntegrationTest extends IntegrationTestBase {
     @Autowired
     private PersonService db;
 
@@ -51,14 +51,15 @@ public class PersonControllerIntegrationTest extends IntegrationTestBase {
         Person person = new Person("John", 13);
         db.save(person);
         MvcResult mvcResult = mockMvc.perform(get("/v1/persons")
-                .param("id", String.valueOf(person.getId()))
-                .accept(MediaType.APPLICATION_JSON))
+                        .param("id", String.valueOf(person.getId()))
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
 
         String jsonResponse = mvcResult.getResponse().getContentAsString();
         ObjectMapper objectMapper = new ObjectMapper();
-        Person responsePerson = objectMapper.readValue(jsonResponse, new TypeReference<Person>() {});
+        Person responsePerson = objectMapper.readValue(jsonResponse, new TypeReference<Person>() {
+        });
 
         assertThat(responsePerson.getId()).isEqualTo(person.getId());
         assertThat(responsePerson.getName()).isEqualTo(person.getName());
@@ -72,8 +73,8 @@ public class PersonControllerIntegrationTest extends IntegrationTestBase {
         ObjectMapper objectMapper = new ObjectMapper();
         String personJson = objectMapper.writeValueAsString(person);
         mockMvc.perform(post("/v1/persons")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(personJson))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(personJson))
                 .andExpect(status().isCreated())
                 .andReturn();
     }

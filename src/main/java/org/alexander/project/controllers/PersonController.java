@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.alexander.project.controllers.dto.PersonDto;
+import org.alexander.project.entity.Person;
 import org.alexander.project.repository.spec.PersonSpecification;
 import org.alexander.project.repository.spec.PersonSpecificationBuilder;
 import org.alexander.project.service.PersonService;
@@ -25,8 +26,9 @@ public class PersonController {
 
     @SneakyThrows
     @GetMapping
-    public PersonDto getPerson(@RequestParam int id) {
-        return service.findById(id);
+    public ResponseEntity<PersonDto> getPerson(@RequestParam int id) {
+        try {return ResponseEntity.status(HttpStatus.OK).body(service.findById(id));}
+        catch (IllegalArgumentException e) {return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);}
     }
 
     @SneakyThrows
@@ -39,18 +41,21 @@ public class PersonController {
     @SneakyThrows
     @PutMapping
     public ResponseEntity<String> edit(@RequestBody PersonDto person) {
-        service.update(person);
+        try {service.update(person);}
+        catch (IllegalArgumentException e) {return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);}
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Сохранения изменены!");
     }
 
     @SneakyThrows
     @GetMapping("/search")
-    public List<PersonDto> search(@RequestParam(required = false) String name,
+    public ResponseEntity<List<PersonDto>> search(@RequestParam(required = false) String name,
                                   @RequestParam(required = false) Integer age,
                                   @RequestParam(required = false) String email,
                                   @RequestParam(required = false) String inn,
                                   @RequestParam(required = false) String organizationdata,
                                   @RequestParam int page) {
+        if (page<=0) {return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);}
+
         PersonSpecification specification = new PersonSpecificationBuilder()
                 .withName(name)
                 .withAge(age)
@@ -60,7 +65,7 @@ public class PersonController {
                 .build();
 
         Pageable pageable = PageRequest.of(page - 1, 5);
-        return service.findAll(specification, pageable);
+        return ResponseEntity.status(HttpStatus.OK).body(service.findAll(specification, pageable));
     }
 
 }

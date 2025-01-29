@@ -75,7 +75,7 @@ public class MenuController {
                 }
                 case 3 -> {
                     IsNotEnded = false;
-
+                    return "Программа завершила цикл работы!";
                 }
                 default -> cons.println("Введено неверное значение");
             }
