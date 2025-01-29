@@ -28,7 +28,7 @@ public class PersonService {
         db.save(person);
     }
     public void update(PersonDto personDto){
-        Person localPerson = this.findById(personDto.getId()).toPerson();
+        Person localPerson = db.findById(personDto.getId()).orElseThrow(() -> new IllegalArgumentException("Person not found"));
         localPerson.setName(personDto.getName());
         localPerson.setAge(personDto.getAge());
         localPerson.setInn(personDto.getInn());

@@ -9,6 +9,8 @@ import org.alexander.project.repository.spec.PersonSpecificationBuilder;
 import org.alexander.project.service.PersonService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,16 +31,16 @@ public class PersonController {
 
     @SneakyThrows
     @PostMapping
-    public String createPerson(@RequestBody PersonDto person) {
+    public ResponseEntity<String> createPerson(@RequestBody PersonDto person) {
         service.save(person.toPerson());
-        return "Создано!";
+        return ResponseEntity.status(HttpStatus.CREATED).body("Создано!");
     }
 
     @SneakyThrows
     @PutMapping
-    public String edit(@RequestBody PersonDto person) {
+    public ResponseEntity<String> edit(@RequestBody PersonDto person) {
         service.update(person);
-        return "Сохранения изменены!";
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Сохранения изменены!");
     }
 
     @SneakyThrows
