@@ -17,12 +17,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-public class PersonControllerPositiveIntegrationTest extends IntegrationTestBase {
+public class PersonControllerIntegrationTest extends IntegrationTestBase {
     @Autowired
     private PersonService db;
 
     @Test
-    public void testSearchPerson() throws Exception {
+    public void searchPerson_WithValidParams_ShouldReturnPersonList() throws Exception {
         Person person = new Person("John", 13);
         db.save(person);
         String name = "John";
@@ -47,7 +47,7 @@ public class PersonControllerPositiveIntegrationTest extends IntegrationTestBase
     }
 
     @Test
-    public void testFindById() throws Exception {
+    public void findPerson_ByValidId_ShouldReturnPerson() throws Exception {
         Person person = new Person("John", 13);
         db.save(person);
         MvcResult mvcResult = mockMvc.perform(get("/v1/persons")
@@ -67,7 +67,7 @@ public class PersonControllerPositiveIntegrationTest extends IntegrationTestBase
     }
 
     @Test
-    public void testCreate() throws Exception {
+    public void createPerson_WithValidData_ShouldReturnCreatedStatus() throws Exception {
         Person person = new Person(0, "John", 13, "sa@yahoo.sex", "1231231312");
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -77,10 +77,12 @@ public class PersonControllerPositiveIntegrationTest extends IntegrationTestBase
                         .content(personJson))
                 .andExpect(status().isCreated())
                 .andReturn();
+
+        assertThat(db.findById(person.getId())).isEqualTo(person);
     }
 
     @Test
-    public void testEdit() throws Exception {
+    public void editPerson_WithValidData_ShouldReturnNoContentStatus() throws Exception {
         Person person = new Person(0, "John", 13, "sa@yahoo.sex", "1231231312");
         db.save(person);
         person.setName("Bob");
@@ -92,7 +94,58 @@ public class PersonControllerPositiveIntegrationTest extends IntegrationTestBase
                         .content(personJson))
                 .andExpect(status().isNoContent())
                 .andReturn();
+
+        assertThat(db.findById(person.getId()).getName()).isEqualTo(person.getName());
     }
+
+    @Test
+    public void searchPerson_WithInvalidPage_ShouldReturnBadRequest() throws Exception {
+        Person person = new Person("John", 13);
+        db.save(person);
+        int page = 0;
+
+        mockMvc.perform(get("/v1/persons/search")
+                        .param("page", String.valueOf(page))
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+
+    }
+
+    @Test
+    public void findPerson_ByNonExistingId_ShouldReturnNotFound() throws Exception {
+        mockMvc.perform(get("/v1/persons")
+                        .param("id", String.valueOf(99999))
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andReturn();
+    }
+
+    @Test
+    public void createPerson_WithoutRequestBody_ShouldReturnBadRequest() throws Exception {
+        mockMvc.perform(post("/v1/persons"))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+    }
+
+    @Test
+    public void editPerson_WithInvalidId_ShouldReturnNotFound() throws Exception {
+        Person person = new Person(0, "John", 13, "sa@yahoo.sex", "1231231312");
+        db.save(person);
+        person.setName("Bob");
+        person.setId(99999);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String personJson = objectMapper.writeValueAsString(person);
+        mockMvc.perform(put("/v1/persons")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(personJson))
+                .andExpect(status().isNotFound())
+                .andReturn();
+
+        assertThat(db.findById(0).getName()).isNotEqualTo(person.getName());
+    }
+
 
 }
 
