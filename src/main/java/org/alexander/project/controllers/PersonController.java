@@ -3,6 +3,7 @@ package org.alexander.project.controllers;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.alexander.project.cantremembernameofthispackage.GeneralError;
 import org.alexander.project.controllers.dto.PersonDto;
 import org.alexander.project.repository.spec.PersonSpecification;
 import org.alexander.project.repository.spec.PersonSpecificationBuilder;
@@ -25,42 +26,35 @@ public class PersonController {
 
     @SneakyThrows
     @GetMapping
-    public ResponseEntity<PersonDto> getPerson(@RequestParam int id) {
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body(service.findById(id));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
+    public PersonDto getPerson(@RequestParam int id) {
+            return service.findById(id);
     }
 
     @SneakyThrows
     @PostMapping
-    public ResponseEntity<String> createPerson(@RequestBody PersonDto person) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public String createPerson(@RequestBody PersonDto person) {
         service.save(person.toPerson());
-        return ResponseEntity.status(HttpStatus.CREATED).body("Создано!");
+        return "Создано!";
     }
 
     @SneakyThrows
     @PutMapping
-    public ResponseEntity<String> edit(@RequestBody PersonDto person) {
-        try {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public String edit(@RequestBody PersonDto person) {
             service.update(person);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Сохранения изменены!");
+        return "Сохранения изменены!";
     }
 
-    @SneakyThrows
     @GetMapping("/search")
-    public ResponseEntity<List<PersonDto>> search(@RequestParam(required = false) String name,
+    public List<PersonDto> search(@RequestParam(required = false) String name,
                                                   @RequestParam(required = false) Integer age,
                                                   @RequestParam(required = false) String email,
                                                   @RequestParam(required = false) String inn,
                                                   @RequestParam(required = false) String organizationdata,
                                                   @RequestParam int page) {
         if (page <= 0) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            throw new GeneralError("400", "Page must be greater than 0");
         }
 
         PersonSpecification specification = new PersonSpecificationBuilder()
@@ -72,7 +66,7 @@ public class PersonController {
                 .build();
 
         Pageable pageable = PageRequest.of(page - 1, 5);
-        return ResponseEntity.status(HttpStatus.OK).body(service.findAll(specification, pageable));
+        return service.findAll(specification, pageable);
     }
 
 }
