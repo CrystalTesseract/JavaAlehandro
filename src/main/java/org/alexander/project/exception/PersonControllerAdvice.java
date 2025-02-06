@@ -1,4 +1,4 @@
-package org.alexander.project.cantremembernameofthispackage;
+package org.alexander.project.exception;
 
 import org.alexander.project.controllers.dto.GeneralErrorDto;
 import org.springframework.web.bind.annotation.ControllerAdvice;

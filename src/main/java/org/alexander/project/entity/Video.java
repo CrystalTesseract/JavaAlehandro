@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 public class Video {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
     private String name;
     private String path;

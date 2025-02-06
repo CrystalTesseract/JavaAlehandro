@@ -1,4 +1,4 @@
-package org.alexander.project.cantremembernameofthispackage;
+package org.alexander.project.exception;
 
 import lombok.Data;
 

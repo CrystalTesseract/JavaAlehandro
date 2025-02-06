@@ -1,9 +1,10 @@
 package org.alexander.project.controllers;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.alexander.project.cantremembernameofthispackage.GeneralError;
+import org.alexander.project.exception.GeneralError;
 import org.alexander.project.controllers.dto.PersonDto;
 import org.alexander.project.repository.spec.PersonSpecification;
 import org.alexander.project.repository.spec.PersonSpecificationBuilder;
@@ -51,11 +52,7 @@ public class PersonController {
                                                   @RequestParam(required = false) String email,
                                                   @RequestParam(required = false) String inn,
                                                   @RequestParam(required = false) String organizationdata,
-                                                  @RequestParam int page) {
-        if (page <= 0) {
-            throw new GeneralError("400", "Page must be greater than 0");
-        }
-
+                                                  @RequestParam @Size(min=1) int page) {
         PersonSpecification specification = new PersonSpecificationBuilder()
                 .withName(name)
                 .withAge(age)

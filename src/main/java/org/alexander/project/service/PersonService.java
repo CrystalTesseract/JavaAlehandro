@@ -1,7 +1,7 @@
 package org.alexander.project.service;
 
 import lombok.RequiredArgsConstructor;
-import org.alexander.project.cantremembernameofthispackage.GeneralError;
+import org.alexander.project.exception.GeneralError;
 import org.alexander.project.controllers.dto.PersonDto;
 import org.alexander.project.entity.Person;
 import org.alexander.project.repository.DataBaseJpaRepository;
