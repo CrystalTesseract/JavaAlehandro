@@ -27,12 +27,12 @@ public class VideoController {
     }
 
     @PutMapping
-    public String clear(){
+    public String clear() {
         service.clear();
         return "Cleared!";
     }
 
-    @GetMapping(value="/stream", produces = {"video/mp4", "video/webm"})
+    @GetMapping(value = "/stream", produces = {"video/mp4", "video/webm"})
     public ResponseEntity<Resource> streamVideo(@RequestParam int id, @RequestHeader(value = "Range", required = false) String rangeHeader) {
         return service.streamVideo(id, rangeHeader);
     }
